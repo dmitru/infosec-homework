@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+    <script>
+        function solveEuclid() {
+            var a = parseInt(document.getElementById("extendedEuclidean-a").value);
+            var b = parseInt(document.getElementById("extendedEuclidean-b").value);
+            var resultDiv = document.getElementById("extendedEuclidean-result");
+            resultDiv.innerHTML = solveFastPowerImpl(a, b);
+
+            function solveFastPowerImpl(a, b) {
+                var r_prev_prev = a;
+                var r_prev = b;
+                var P_prev = 1;
+                var P = 0;
+                var Q_prev = 0;
+                var Q = 1;
+
+                var step = 1;
+                result = "<table border=1><tr><th>step</th><th>r_(i-1)</th><th>r_(i-2)</th><th>r</th>" +
+                        "<th>g</th><th>P_(i-2)</th><th>P_(i-1)</th><th>P</th><th>Q_(i-2)</th><th>Q_(i-1)</th><th>Q</th></tr>";
+                while (true) {
+                    var r = r_prev_prev % r_prev;
+                    var g = Math.floor(r_prev_prev / r_prev);
+                    var P_next = -P * g + P_prev;
+                    var Q_next = -Q * g + Q_prev;
+
+                    result += "<tr>";
+                    result += "<th>" + step + "</th>" +
+                            "<th>" + r_prev + "</th>" +
+                            "<th>" + r_prev_prev + "</th>" +
+                            "<th>" + r_prev_prev + " / " + r_prev + " = " + g + "</th>" +
+                            "<th>" + r_prev_prev + " % " + r_prev + " = " + r + "</th>" +
+                            "<th>" + P_prev + "</th>" +
+                            "<th>" + P + "</th>" +
+                            "<th>" + P_prev + " - " + r + "*" + P + " = " + P_next + "</th>" +
+                            "<th>" + Q_prev + "</th>" +
+                            "<th>" + Q + "</th>" +
+                            "<th>" + Q_prev + " - " + r + "*" + Q + " = " + Q_next + "</th>";
+                    result += "</tr>";
+
+                    step++;
+                    P_prev = P;
+                    P = P_next;
+                    Q_prev = Q;
+                    Q = Q_next;
+                    r_prev_prev = r_prev;
+                    r_prev = r;
+
+                    if (r == 0)
+                        break;
+                }
+
+                result += "</table><br/>"
+
+                var y = Q_prev;
+                var x = P_prev;
+                var gcd = a * x + b * y;
+                result += a + " * " + x + " + " + b + " * " + y + " = " + gcd;
+                return result;
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+<div id="extendedEuclidean">
+    <h2>3. Extended Euclid</h2>
+    To find a^(-1) mod n, gcd(a, n) = 1, find gcd(a, n) = a * x + n * y = 1 -> a * x = 1 mod n -> x -> a^(-1) = x.
+    <form>
+        a: <input type="text" name="a" id="extendedEuclidean-a"/><br/>
+        b: <input type="text" name="b" id="extendedEuclidean-b"/><br/>
+        <input type="button" value="compute!" onclick="solveEuclid()"/>
+    </form>
+    Answer:
+    <br/>
+    <div id="extendedEuclidean-result"></div>
+    <img src="euclid.png" width="600px"/><br/>
+</div>
+
+</body>
+</html>
