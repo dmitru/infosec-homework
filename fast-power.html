@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+    <script>
+        function solveFastPower() {
+            var a = parseInt(document.getElementById("fastPower-a").value);
+            var b = parseInt(document.getElementById("fastPower-b").value);
+            var mod = parseInt(document.getElementById("fastPower-mod").value);
+            var resultDiv = document.getElementById("fastPower-result");;
+            resultDiv.innerHTML = solveFastPowerImpl(a, b, mod);
+
+            function solveFastPowerImpl(a, b, mod) {
+                var powersOfTwo = [];
+                var bt = b;
+                var curPow = 0;
+                while (bt > 0) {
+                    if (bt & 1) {
+                        powersOfTwo.push(curPow);
+                    }
+                    curPow++;
+                    bt >>= 1;
+                }
+
+                var result = "b = " + b + " = " +
+                        powersOfTwo.map(function (p) {
+                            return Math.pow(2, p).toString();
+                        }).join(" + ") + "<br/>";
+
+                result += "***<br/>";
+
+                var pows = [];
+                var maxPow = powersOfTwo[powersOfTwo.length - 1];
+                var temp = a % mod;
+                result += a + "^" + 1 + " mod " + mod + " = " + temp + "<br/>";
+                pows.push(temp);
+                for (var pow = 1; pow <= maxPow; pow++) {
+                    var old_temp = temp;
+                    temp = (temp * temp) % mod;
+                    pows.push(temp);
+                    result += a + "^" + Math.pow(2, pow) + " mod " + mod +
+                            " = " + old_temp + " * " + old_temp + " mod " + mod +  " = " + temp + "<br/>";
+                }
+
+                result += "***<br/>";
+
+                var answer = pows[powersOfTwo[0]];
+                for (var i = 1; i < powersOfTwo.length; i++) {
+                    var t = (answer * pows[powersOfTwo[i]]) % mod;
+                    result += answer + " * " + pows[powersOfTwo[i]] + " mod " + mod + " = " + t + "<br/>";
+                    answer = t;
+                }
+
+                result += "***<br/>";
+                result += "Answer: " + answer;
+
+                return result;
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+<div id="fastPower">
+    <h2>6. Fast power algorithm</h2>
+    <form>
+        a: <input type="text" name="a" id="fastPower-a"/><br/>
+        b: <input type="text" name="b" id="fastPower-b"/><br/>
+        mod: <input type="text" name="mod" id="fastPower-mod"/><br/>
+        <input type="button" value="compute!" onclick="solveFastPower()"/>
+    </form>
+    Answer:
+    <br/>
+    <div id="fastPower-result"></div>
+</div>
+
+</body>
+</html>
