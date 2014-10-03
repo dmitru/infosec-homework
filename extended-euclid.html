@@ -9,9 +9,20 @@
             var a = parseInt(document.getElementById("extendedEuclidean-a").value);
             var b = parseInt(document.getElementById("extendedEuclidean-b").value);
             var resultDiv = document.getElementById("extendedEuclidean-result");
-            resultDiv.innerHTML = solveFastPowerImpl(a, b);
+            resultDiv.innerHTML = solveEuclidExtendedImpl(a, b);
 
-            function solveFastPowerImpl(a, b) {
+            function solveEuclid(a, b) {
+                var t = "gcd(" + a + "," + b + ") = <br/>";
+                if (a == 0 || b == 0)
+                    return t + (a + b);
+                if (a > b) {
+                    return t + solveEuclid(a % b, b);
+                } else {
+                    return t + solveEuclid(a, b % a);
+                }
+            }
+
+            function solveEuclidExtendedImpl(a, b) {
                 var r_prev_prev = a;
                 var r_prev = b;
                 var P_prev = 1;
@@ -19,8 +30,10 @@
                 var Q_prev = 0;
                 var Q = 1;
 
+                result = solveEuclid(a, b) + "<br/>";
+
                 var step = 1;
-                result = "<table border=1><tr><th>step</th><th>r_(i-1)</th><th>r_(i-2)</th><th>r</th>" +
+                result += "<table border=1><tr><th>step</th><th>r_(i-1)</th><th>r_(i-2)</th><th>r</th>" +
                         "<th>g</th><th>P_(i-2)</th><th>P_(i-1)</th><th>P</th><th>Q_(i-2)</th><th>Q_(i-1)</th><th>Q</th></tr>";
                 while (true) {
                     var r = r_prev_prev % r_prev;
